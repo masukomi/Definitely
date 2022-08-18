@@ -1,0 +1,21 @@
+{
+    "perl" : "6.c",
+    "name" : "Definitely",
+    "api"  : "1",
+    "auth" : "github:masukomi",
+    "version" : "1.0.0",
+    "description" : "An implementation of the Maybe Monad",
+    "authors" : [ "p6steve", "masukomi" ],
+    "license" : "MIT",
+    "provides" : {
+        "Definitely" : "lib/Definitely.rakumod"
+    },
+    "depends" : [ ],
+    "build-depends" : [ ],
+    "test-depends" : [ ],
+    "resources" : [ ],
+    "tags": [
+      "Maybe", "Monad"
+    ],
+    "source-url" : "git://github.com/masukomi/Maybe.git"
+}
