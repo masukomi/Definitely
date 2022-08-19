@@ -1,5 +1,7 @@
-NAME Definitely (Maybe) - An implementation of the Maybe Monad
-==============================================================
+Definitely (Maybe)
+==================
+
+An implementation of the Maybe Monad in Raku
 
 DESCRIPTION
 -----------
@@ -85,8 +87,10 @@ AUTHORS
 
 The seed of this comes from [This post by p6Steve](https://p6steve.wordpress.com/2022/08/16/raku-rust-option-some-none/). [masukomi](https://masukomi.org)) built it out into a full Maybe Monad implementation as a Raku module.
 
-LICENSE The Artistic License 2.0 Copyright (c) 2022, The Perl Foundation.
--------------------------------------------------------------------------
+LICENSE
+-------
+
+MIT. See LICENSE file.
 
 
 

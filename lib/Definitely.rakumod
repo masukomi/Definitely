@@ -1,7 +1,8 @@
 
 =begin pod
-=head1 NAME
-Definitely (Maybe) - An implementation of the Maybe Monad
+=head1 Definitely (Maybe)
+=para
+An implementation of the Maybe Monad in Raku
 
 =head2 DESCRIPTION
 =para
@@ -120,7 +121,8 @@ L<masukomi|https://masukomi.org>) built it out into a full
 Maybe Monad implementation as a Raku module.
 
 =head2 LICENSE
-The Artistic License 2.0 Copyright (c) 2022, The Perl Foundation.
+=para
+MIT. See LICENSE file.
 =end pod
 
 unit module Definitely:ver<1.0.0>:auth<masukomi (masukomi@masukomi.org)>; # (Maybe)
