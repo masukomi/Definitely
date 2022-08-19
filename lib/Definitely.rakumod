@@ -5,10 +5,14 @@
 # DONE
 # must be able to specify that a function returns a
 # Maybe[Int] (or whatever)
-# sub foo($x) returns Maybe[Int] { Some.new(3); }
-
-# TODO
-#
+# NOTE: you have to use the something helper
+#       or manually do: Something.new($x) but Maybe
+# sub foo($x) returns Maybe[Int] { something($x); }
+#  # works if you poss it an int. blows up if you pass it something else
+# sub foo($x) returns Maybe { something($x); }
+#  # works
+# FIXME
+# sub foo() returns Maybe {nothing();}
 
 
 unit module Definitely;
@@ -16,16 +20,16 @@ unit module Definitely;
 
 role HasValue {
     method is-something returns Bool {
-        self.^name eq "Definitely::Some"
+        return self.^name eq "Definitely::Some";
     }
 }
 role Things {                   #a utility Role for both flavalueours of Some
     method gist {
-        "(Some[{$.value.^name}] $.value)"     #
+        $.value;                #
     }                           # .gist and .raku are used by .say and .Str
                                 # methods ... so we ovalueerride them to make nice
     method raku {               # output
-        "(Some[{$.value.^name}] $.value)"
+        "(Some[{$.value.^name}] $.value)";
     }
 
     method Str {
@@ -40,14 +44,13 @@ role Things {                   #a utility Role for both flavalueours of Some
 role Maybe[::T] does HasValue is export {}
 role Maybe does HasValue is export {}
 
-role None is export does HasValue {
-# role None is export {
+class None is export does HasValue is Maybe {
     method FALLBACK (*@rest) {
-        None;
+        return self;
     }
 }
 
-role Some[::Type] does Things is Maybe is export {    # a parameterized role with a type capture
+role Some[::Type] does Things does HasValue is export {    # a parameterized role with a type capture
 # role Some[::Type] is export does Things {    # a parameterized role with a type capture
     has Type $.value is required;      # using the type capture for a public attr
 
@@ -57,7 +60,7 @@ role Some[::Type] does Things is Maybe is export {    # a parameterized role wit
     }
 }
 
-role Some does Things is Maybe is export {         # role are multis (Some[Int].new and Some.new)
+role Some does Things does HasValue is export {         # role are multis (Some[Int].new and Some.new)
     has $.s is required;                  # require the attr ... if absent, fail
     has $.value;
 
@@ -69,4 +72,11 @@ role Some does Things is Maybe is export {         # role are multis (Some[Int].
     submethod TWEAK {                   # late stage constructor alias $s.value to $.value
         $!value := $!s.value            # for the Some Things role
     }
+}
+
+sub something(::T $value) is export {
+    return Some[(T)].new(:$value) but Maybe[(T)];
+}
+sub nothing() is export {
+    return None but Maybe;
 }
