@@ -3,56 +3,7 @@
 =head1 NAME
 Definitely (Maybe) - An implementation of the Maybe Monad
 
-=head1 SYNOPSIS
-
-=begin code :lang<raku>
-use Definitely;
-
-multi sub foo($x) returns Maybe[Int] {
-  $x ~~ Int ?? something($x) !! nothing(Int);
-}
-multi sub foo($x) returns Maybe {
-  2.rand.Int == 1 ?? something($x) !! nothing();
-}
-
-# explicitly handle questionable results
-given foo(3) {
-  when $_ ~~ Some {say "'Tis a thing Papa!. Look: $_"}
-  default {say "'Tis nothing.'"}
-}
-# or, call the .is-something method
-my Maybe[Int] $questionable_result = foo(3)
-if $questionable_result.is-something {
-    # extract the value directly
-    return $questionable_result.value + 4;
-}
-# or, test truthyness (Some is True None is False)
-my Maybe[Int] $questionable_result = foo(4);
-?$questionable_result ?? $questionable_result.value !! die "oh no!"
-
-=end code
-
-
-=head1 EXPORTED SUBROUTINES
-There are 3 simple helper methods to make your life a bit easier.
-
-=head2 something(Any)
-Takes a single argument and returns a Some[Type] but Maybe[Type]
-
-=head2 nothing(Any)
-Takes a type argument and returns None but Maybe[Type].
-
-Use this when your method returns a typed or untyped Maybe.
-
-=head2 nothing()
-Takes no arguments and returns None but Maybe.
-
-Use this only when your method returns an untyped Maybe.
-
-=head2 value-or-die(Maybe $maybe_obj, Str $message)
-Extracts the value from the provided Maybe object or dies with your message.
-
-=head1 DESCRIPTION
+=head2 DESCRIPTION
 =para
 The L<Maybe Monad|https://en.wikipedia.org/wiki/Monad_(functional_programming)#An_example:_Maybe>
 is a technique for avoiding unexpected Nil exceptions or having to
@@ -84,7 +35,7 @@ logger().record_error("does nothing, and doesn't blow up")
 
 
 =para
-Many racoons argue that because Raku has typed Nils, the Maybe Monad
+Many racoons argue that because Raku has typed C<Nil>s, the Maybe Monad
 is already built in. See L<this Stack Overflow answer|https://stackoverflow.com/questions/55072228/creating-a-maybe-type-in-perl-6>
 for more details. Even if they're right, people like me would argue
 that there's a huge maintainability value to having code that makes
@@ -92,11 +43,80 @@ it I<explicit> that I<Maybe> the value you get back from a method
 won't be what you were hoping for.
 
 
+=head2 USAGE
+=para
+The core idea is simple. When creating a function specify it's return type as
+C<Maybe> or C<Maybe[Type]>. Within the function you'll use the C<something(Any)>
+and C<nothing()> or C<nothing(Type)> helper functions to provide a C<Maybe> /
+C<Maybe[Type]> compatible object to your caller. The caller then has multiple
+choices for how to handle the result.
+
+
+
+=begin code :lang<raku>
+use Definitely;
+
+multi sub foo($x) returns Maybe[Int] {
+  $x ~~ Int ?? something($x) !! nothing(Int);
+}
+multi sub foo($x) returns Maybe {
+  2.rand.Int == 1 ?? something($x) !! nothing();
+}
+
+# explicitly handle questionable results
+given foo(3) {
+  when $_ ~~ Some {say "'Tis a thing Papa!. Look: $_"}
+  default {say "'Tis nothing.'"}
+}
+# or, call the .is-something method
+my Maybe[Int] $questionable_result = foo(3)
+if $questionable_result.is-something {
+    # extract the value directly
+    return $questionable_result.value + 4;
+}
+# or, test truthyness (Some is True None is False)
+my Maybe[Int] $questionable_result = foo(4);
+?$questionable_result ?? $questionable_result.value !! die "oh no!"
+
+# or, just assume it's good if you don't care if calls have no result
+my Maybe[Logger] $maybe_log = logger();
+$maybe_log.report_error("called if logger is Some, ignored if None")
+
+=end code
+
+
+=head2 EXPORTED SUBROUTINES
+=para
+There are four simple helper methods to make your life a bit easier.
+
+=head3 something(Any)
+=para
+Takes a single argument and returns a Some[Type] but Maybe[Type]
+
+=head3 nothing(Any)
+=para
+Takes a type argument and returns None but Maybe[Type].
+
+Use this when your method returns a typed or untyped Maybe.
+
+=head3 nothing()
+=para
+Takes no arguments and returns None but Maybe.
+
+Use this only when your method returns an untyped Maybe.
+
+=head3 value-or-die(Maybe $maybe_obj, Str $message)
+=para
+Extracts the value from the provided Maybe object or dies with your message.
+
+
+
 
 
 =head2 AUTHORS
+=para
 The seed of this comes from L<This post by p6Steve|https://p6steve.wordpress.com/2022/08/16/raku-rust-option-some-none/>.
-I (L<masukomi|https://masukomi.org>) have built it out into a full
+L<masukomi|https://masukomi.org>) built it out into a full
 Maybe Monad implementation as a Raku module.
 
 =head2 LICENSE
