@@ -2,7 +2,7 @@
     "perl" : "6.c",
     "name" : "Definitely",
     "api"  : "1",
-    "auth" : "github:masukomi",
+    "auth" : "fez:masukomi",
     "version" : "1.0.0",
     "description" : "An implementation of the Maybe Monad",
     "authors" : [ "p6steve", "masukomi" ],
