@@ -57,6 +57,7 @@ C<Some> & C<None> both provide an C<.is-something> method, if you want
 to explicitly test if you have something. You can explicitly extract the
 value from a Maybe object by calling C<.value> on it.
 
+=para
 C<None> provides a C<FALLBACK>
 method that returns the same None object. This means that you can call method
 chains on it as if it were the thing you hoped for without blowing up.
@@ -96,28 +97,15 @@ Maybe Monad implementation as a Raku module.
 The Artistic License 2.0 Copyright (c) 2022, The Perl Foundation.
 =end pod
 
-
-# DONE
-# must be able to specify that a function returns a
-# Maybe[Int] (or whatever)
-# NOTE: you have to use the something helper
-#       or manually do: Something.new($x) but Maybe
-# sub foo($x) returns Maybe[Int] { something($x); }
-#  # works if you poss it an int. blows up if you pass it something else
-# sub foo($x) returns Maybe { something($x); }
-#  # works
-# sub foo() returns Maybe {nothing();}
-
-
 unit module Definitely;
 
 
 role HasValue {
     method is-something returns Bool {
-        return self.^name eq "Definitely::Some";
+        return self ~~ Definitely::Some;
     }
 }
-role Things {                   #a utility Role for both flavalueours of Some
+role Things {                   #a utility Role for both flavours of Some
     method gist {
         $.value;                #
     }                           # .gist and .raku are used by .say and .Str
@@ -144,8 +132,7 @@ role None does HasValue is export {
     }
 }
 
-role Some[::Type] does Things does HasValue is export {    # a parameterized role with a type capture
-# role Some[::Type] is export does Things {    # a parameterized role with a type capture
+role Some[::Type] does Things does HasValue is export {
     has Type $.value is required;      # using the type capture for a public attr
 
     multi method new( $value ) {    # ensure that the value is defined
@@ -154,7 +141,7 @@ role Some[::Type] does Things does HasValue is export {    # a parameterized rol
     }
 }
 
-role Some does Things does HasValue is export {         # role are multis (Some[Int].new and Some.new)
+role Some does Things does HasValue is export {
     has $.s is required;                  # require the attr ... if absent, fail
     has $.value;
 
