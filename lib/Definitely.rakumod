@@ -13,11 +13,13 @@
 
 unit module Definitely;
 
-role Maybe[::T] is export {}
-role Maybe is export {}
 
+role HasValue {
+    method is-something returns Bool {
+        self.^name eq "Definitely::Some"
+    }
+}
 role Things {                   #a utility Role for both flavalueours of Some
-
     method gist {
         "(Some[{$.value.^name}] $.value)"     #
     }                           # .gist and .raku are used by .say and .Str
@@ -27,32 +29,35 @@ role Things {                   #a utility Role for both flavalueours of Some
     }
 
     method Str {
-        ~$.value                    # ~ is the Str concatenate operator, when used
+        $.value.Str                    # ~ is the Str concatenate operator, when used
     }                           # as a prefix it coerces its argument to (Str)
 
-    method Numeric {
-        +$.value                    # + is the addition operator, when used as a
+    method Num {
+        $.value.Num                   # + is the addition operator, when used as a
     }                           # prefix it coerces its argument to (Num)
 }
 
-role None is export does Maybe {
+role Maybe[::T] does HasValue is export {}
+role Maybe does HasValue is export {}
+
+role None is export does HasValue {
 # role None is export {
     method FALLBACK (*@rest) {
         None;
     }
 }
 
-role Some[::T] does Things does Maybe is export {    # a parameterized role with a type capture
-# role Some[::T] is export does Things {    # a parameterized role with a type capture
-    has T $.value is required;      # using the type capture for a public attr
+role Some[::Type] does Things is Maybe is export {    # a parameterized role with a type capture
+# role Some[::Type] is export does Things {    # a parameterized role with a type capture
+    has Type $.value is required;      # using the type capture for a public attr
 
-    multi method new( $value ) {    # ensure that the valuealue is defined
+    multi method new( $value ) {    # ensure that the value is defined
         die "Can't define a new Some without a value." without $value;
         self.new: :$value
     }
 }
 
-role Some does Things does Maybe is export {         # role are multis (Some[Int].new and Some.new)
+role Some does Things is Maybe is export {         # role are multis (Some[Int].new and Some.new)
     has $.s is required;                  # require the attr ... if absent, fail
     has $.value;
 
