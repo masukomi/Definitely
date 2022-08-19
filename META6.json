@@ -1,21 +1,29 @@
 {
-    "perl" : "6.c",
-    "name" : "Definitely",
-    "api"  : "1",
-    "auth" : "fez:masukomi",
-    "version" : "1.0.0",
-    "description" : "An implementation of the Maybe Monad",
-    "authors" : [ "p6steve", "masukomi" ],
-    "license" : "MIT",
-    "provides" : {
-        "Definitely" : "lib/Definitely.rakumod"
-    },
-    "depends" : [ ],
-    "build-depends" : [ ],
-    "test-depends" : [ ],
-    "resources" : [ ],
-    "tags": [
-      "Maybe", "Monad"
-    ],
-    "source-url" : "git://github.com/masukomi/Definitely.git"
+  "api": "1",
+  "auth": "fez:masukomi",
+  "authors": [
+    "p6steve",
+    "masukomi"
+  ],
+  "build-depends": [
+  ],
+  "depends": [
+  ],
+  "description": "An implementation of the Maybe Monad",
+  "license": "MIT",
+  "name": "Definitely",
+  "perl": "6.c",
+  "provides": {
+    "Definitely": "lib/Definitely.rakumod"
+  },
+  "resources": [
+  ],
+  "source-url": "git://github.com/masukomi/Definitely.git",
+  "tags": [
+    "Maybe",
+    "Monad"
+  ],
+  "test-depends": [
+  ],
+  "version": "1.0.0"
 }
