@@ -1,0 +1,84 @@
+use Test;      # a Standard module included with Rakudo
+use lib 'lib';
+use Definitely;
+
+# my $num-tests = 10;
+# plan $num-tests;
+
+sub matching-type-some() returns Maybe[Int] { something(3) }
+sub mismatching-type-some() returns Maybe[Int] { something("foo") }
+sub matching-type-none() returns Maybe[Int] { nothing(Int) }
+sub matching-untyped-none() returns Maybe { nothing() }
+sub mismatching-type-none() returns Maybe[Int] { nothing(Str)}
+sub mismatch-untyped-some returns Maybe[Int] { Some.new(3) }
+sub mismatch-untyped-none returns Maybe[Int] { None.new() }
+sub value-or-die-message(Str $message) {
+	try {
+		CATCH { default {return .Str}}
+		value-or-die(nothing(), $message);
+	}
+}
+
+# test None, Some, & Maybe
+# test that Some.gist returns the value
+is(Some.new(3).gist, "3", ".gist returns string value of value" );
+# test None.is-something returns False
+is(None.is-something, False, "None is falsey");
+is(None.new().is-something, False, "Instantiated None is falsey");
+# test that Some.is-something returns True
+is(Some.new(3).is-something, True, "Some is-something");
+is(Some.new(False).is-something, True, "A False Some is-something");
+is(Some.is-something, True, "Uninstantiated Some is True");
+# test that Some.raku includes the type name
+is(Some.new(3).raku.contains("[Int]"), True, "Some.raku contains type name.");
+is(Some.new("foo").raku.contains("[Str]"), True, "Some.raku contains type name.");
+# test that Some.new(x).Bool is True (even False)
+is(Some.new(3).Bool, True, "Some is True");
+is(Some.new(False).Bool, True, "A False Some is True");
+# test that None.new().Bool is False
+is(None.Bool, False, "None is falsey");
+is(None.new().Bool, False, "Instantiated None is falsey");
+is(Some.new(3).^name, "Definitely::Some", "Untyped Somes are untyped");
+is(Some[Str].new("foo").^name, "Definitely::Some[Str]", "Typed Somes are typed");
+# test that we can make a None but Maybe
+is(nothing().^name, 'Definitely::None+{Definitely::Maybe}', "It's None, Maybe");
+# test that we can make a Some but Maybe
+is((Some.new("foo") but Maybe).^name, 'Definitely::Some+{Definitely::Maybe}', "It's Some, Maybe");
+# test that returning Some[Type] for a Maybe[Type] method doesn't blow up
+isa-ok(matching-type-some(), Some);
+# test that returning a None[Type] for a Maybe[Type] method doesn't blow up
+isa-ok(matching-type-none(), None);
+# test that returning a None for a Maybe[Type] method DOES blow up
+dies-ok({mismatch-untyped-none()}, "Untyped None not usable for Typed Maybe");
+# test that returning a None for a Maybe[Type] method DOES blow up
+dies-ok({mismatch-untyped-some()}, "Untyped Some not usable for Typed Maybe");
+# test that retruning a None for a Maybe method doesn't blow up
+isa-ok(matching-untyped-none(), None);
+# test that a mismatched Some type blows up
+dies-ok({mismatching-type-some()}, "Mismatched Some Type blows up");
+# test that a mismatched None type blows up
+dies-ok({mismatching-type-none()}, "Mismatched None Type blows up");
+
+# test helper methods
+# test that nothing() returns a None
+isa-ok(nothing(), None);
+# test that nothing() returns a None that's a Maybe
+isa-ok(nothing(), Maybe);
+# test that nothing(Type) returns a None+Maybe[Type]
+isa-ok(nothing(Int), Maybe[Int]);
+# NOTE: currently no Typed None's. Something to implement later.
+# test that nothing(Type) returns a None[Type] that's a Maybe
+isa-ok(nothing(Int), Maybe[Int]);
+
+#test that something() returns a Some[Type]
+isa-ok(something(3), Some[Int]);
+# and that it's a Maybe[Type]
+isa-ok(something(3), Maybe[Int]);
+
+
+# test that value-or-die returns a value from a Some
+is(value-or-die(something(3), "won't happen"), 3, "value or die returns value");
+# test that value-or-die dies
+dies-ok({value-or-die(nothing(), "eep")});
+is(value-or-die-message("my error message"), "my error message");
+done-testing;  # optional with 'plan'
