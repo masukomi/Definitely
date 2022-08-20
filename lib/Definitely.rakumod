@@ -112,6 +112,10 @@ $maybe_log.report_error("called if logger is Some, ignored if None")
 
 =end code
 
+=head2 Installation
+
+C<zef install Definitely>
+
 
 =head2 AUTHORS
 =para

@@ -75,6 +75,11 @@ my Maybe[Logger] $maybe_log = logger();
 $maybe_log.report_error("called if logger is Some, ignored if None")
 ```
 
+Installation
+------------
+
+`zef install Definitely`
+
 AUTHORS
 -------
 
