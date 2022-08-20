@@ -12,10 +12,10 @@ sub matching-untyped-none() returns Maybe { nothing() }
 sub mismatching-type-none() returns Maybe[Int] { nothing(Str)}
 sub mismatch-untyped-some returns Maybe[Int] { Some.new(3) }
 sub mismatch-untyped-none returns Maybe[Int] { None.new() }
-sub value-or-die-message(Str $message) {
+sub unwrap-message(Str $message) {
 	try {
 		CATCH { default {return .Str}}
-		value-or-die(nothing(), $message);
+		unwrap(nothing(), $message);
 	}
 }
 
@@ -76,9 +76,9 @@ isa-ok(something(3), Some[Int]);
 isa-ok(something(3), Maybe[Int]);
 
 
-# test that value-or-die returns a value from a Some
-is(value-or-die(something(3), "won't happen"), 3, "value or die returns value");
-# test that value-or-die dies
-dies-ok({value-or-die(nothing(), "eep")});
-is(value-or-die-message("my error message"), "my error message");
+# test that unwrap returns a value from a Some
+is(unwrap(something(3), "won't happen"), 3, "value or die returns value");
+# test that unwrap dies
+dies-ok({unwrap(nothing(), "eep")});
+is(unwrap-message("my error message"), "my error message");
 done-testing;  # optional with 'plan'
