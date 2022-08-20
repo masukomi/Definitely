@@ -6,9 +6,27 @@ An implementation of the Maybe Monad in Raku
 DESCRIPTION
 -----------
 
-The [Maybe Monad](https://en.wikipedia.org/wiki/Monad_(functional_programming)#An_example:_Maybe) is a technique for avoiding unexpected Nil exceptions or having to explicitly test for Nil in a method's response.
+The [Maybe Monad](https://en.wikipedia.org/wiki/Monad_(functional_programming)#An_example:_Maybe) is a technique for avoiding unexpected Nil exceptions or having to explicitly test for Nil in a method's response. It removes a lot of ambiguity, which increases maintainability, and reduces surprises.
 
-`Some` & `None` both provide an `.is-something` method, if you want to explicitly test if you have something. You can explicitly extract the value from a Maybe object by calling `.value` on it.
+It's called "Definitely" because when you use this module's types, you'll "Definitely" know what you're working with:
+
+  * `Definitely::Maybe`
+
+  * `Definitely::Some`
+
+  * `Definitley::None`
+
+For example:
+
+```raku
+sub never-int() returns Int { Nil }
+#vs
+sub maybe-int() returns Maybe[Int] {...}
+```
+
+The `never-int` function claims it'll return an `Int`, but it never does. The `maybe-int` function makes it explicit that *maybe* you'll get an Int, but *maybe* you won't.
+
+`Some` & `None` both provide an `.is-something` method, if you want to explicitly test if you have something. You can also convert them to a Bool for quick testing (Some is True, None is False). You can explicitly extract the value from a Maybe/Some object by calling its `.value` method.
 
 `None` provides a `FALLBACK` method that returns the same None object. This means that you can call method chains on it as if it were the thing you hoped for without blowing up. Obviously, you'd only do this if your system would be ok with nothing happening as a result of these calls. For example, logging is nice, but you probably want your system to carry on even if the logging mechanism is unavailable.
 
@@ -57,31 +75,6 @@ my Maybe[Logger] $maybe_log = logger();
 $maybe_log.report_error("called if logger is Some, ignored if None")
 ```
 
-EXPORTED SUBROUTINES
---------------------
-
-There are four simple helper methods to make your life a bit easier.
-
-### something(Any)
-
-Takes a single argument and returns a Some[Type] but Maybe[Type]
-
-### nothing(Any)
-
-Takes a type argument and returns None but Maybe[Type].
-
-Use this when your method returns a typed or untyped Maybe.
-
-### nothing()
-
-Takes no arguments and returns None but Maybe.
-
-Use this only when your method returns an untyped Maybe.
-
-### value-or-die(Maybe $maybe_obj, Str $message)
-
-Extracts the value from the provided Maybe object or dies with your message.
-
 AUTHORS
 -------
 
@@ -92,10 +85,6 @@ LICENSE
 
 MIT. See LICENSE file.
 
-
-
-provides the is-something method to Some, None, & Many
-
 ### method is-something
 
 ```raku
@@ -103,26 +92,6 @@ method is-something() returns Bool
 ```
 
 Returns true for Some
-
-
-
-Typed Maybe - use for defining the object type your method returns
-
-
-
-Untype Maybe - use when you don't know or care what type your method returns
-
-
-
-If your method returns Maybe, but you don't have a valid value, return None
-
-
-
-Typed Some - Untyped some uses this too
-
-
-
-Untyped Some - Passes through to typed Some.
 
 ### sub something
 
@@ -132,7 +101,7 @@ sub something(
 ) returns Mu
 ```
 
-simple creation of Some objects that also match the Maybe type
+Simple creation of Some objects that also match the Maybe type.
 
 ### multi sub nothing
 
@@ -142,7 +111,7 @@ multi sub nothing(
 ) returns Mu
 ```
 
-use to create None objects when your method returns a typed Maybe
+Used to create None objects when your method returns a typed Maybe.
 
 ### multi sub nothing
 
@@ -150,7 +119,7 @@ use to create None objects when your method returns a typed Maybe
 multi sub nothing() returns Mu
 ```
 
-simple creation of untyped None objects that also match the Maybe type
+Used to create None objects when your method returns an untyped Maybe.
 
 ### sub value-or-die
 

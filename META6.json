@@ -2,8 +2,8 @@
   "api": "1",
   "auth": "fez:masukomi",
   "authors": [
-    "p6steve",
-    "masukomi"
+    "p6steve <p6steve@furnival.net>",
+    "masukomi <masukomi@masukomi.org>"
   ],
   "build-depends": [
   ],

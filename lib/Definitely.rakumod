@@ -8,12 +8,39 @@ An implementation of the Maybe Monad in Raku
 =para
 The L<Maybe Monad|https://en.wikipedia.org/wiki/Monad_(functional_programming)#An_example:_Maybe>
 is a technique for avoiding unexpected Nil exceptions or having to
-explicitly test for Nil in a method's response.
+explicitly test for Nil in a method's response. It removes a lot of ambiguity,
+which increases maintainability, and reduces surprises.
+
+
+=para
+It's called "Definitely" because when you use this module's types, you'll "Definitely"
+know what you're working with:
+
+=item C<Definitely::Maybe>
+=item C<Definitely::Some>
+=item C<Definitley::None>
+
+=para
+For example:
+
+=begin code :lang<raku>
+sub never-int() returns Int { Nil }
+#vs
+sub maybe-int() returns Maybe[Int] {...}
+=end code
+
+=para
+The C<never-int> function claims it'll return an C<Int>, but it never does.
+The C<maybe-int> function makes it explicit that I<maybe> you'll get an Int,
+but I<maybe> you won't.
+
+
 
 =para
 C<Some> & C<None> both provide an C<.is-something> method, if you want
-to explicitly test if you have something. You can explicitly extract the
-value from a Maybe object by calling C<.value> on it.
+to explicitly test if you have something. You can also convert them to a Bool
+for quick testing (Some is True, None is False). You can explicitly extract the
+value from a Maybe/Some object by calling its C<.value> method.
 
 =para
 C<None> provides a C<FALLBACK>
@@ -86,49 +113,26 @@ $maybe_log.report_error("called if logger is Some, ignored if None")
 =end code
 
 
-=head2 EXPORTED SUBROUTINES
-=para
-There are four simple helper methods to make your life a bit easier.
-
-=head3 something(Any)
-=para
-Takes a single argument and returns a Some[Type] but Maybe[Type]
-
-=head3 nothing(Any)
-=para
-Takes a type argument and returns None but Maybe[Type].
-
-Use this when your method returns a typed or untyped Maybe.
-
-=head3 nothing()
-=para
-Takes no arguments and returns None but Maybe.
-
-Use this only when your method returns an untyped Maybe.
-
-=head3 value-or-die(Maybe $maybe_obj, Str $message)
-=para
-Extracts the value from the provided Maybe object or dies with your message.
-
-
-
-
-
 =head2 AUTHORS
 =para
 The seed of this comes from L<This post by p6Steve|https://p6steve.wordpress.com/2022/08/16/raku-rust-option-some-none/>.
 L<masukomi|https://masukomi.org>) built it out into a full
 Maybe Monad implementation as a Raku module.
 
+
 =head2 LICENSE
 =para
 MIT. See LICENSE file.
+
 =end pod
+
+
+
 
 unit module Definitely:ver<1.0.0>:auth<masukomi (masukomi@masukomi.org)>; # (Maybe)
 
 
-#| provides the is-something method to Some, None, & Many
+# provides the is-something method to Some, None, & Many
 role HasValue {
     #| Returns true for Some
     method is-something returns Bool {
@@ -155,14 +159,14 @@ role Things {                   #a utility Role for both flavours of Some
     method Bool {True}
 }
 
-#| Typed Maybe - use for defining the object type your method returns
+# Typed Maybe - use for defining the object type your method returns
 role Maybe[::T] does HasValue is export {}
-#| Untype Maybe - use when you don't know or care what type your method returns
+# Untype Maybe - use when you don't know or care what type your method returns
 role Maybe does HasValue is export {}
 
 #TODO: add a typed None
 
-#| If your method returns Maybe, but you don't have a valid value, return None
+# If your method returns Maybe, but you don't have a valid value, return None
 role None does HasValue is export {
     method Bool { False }
     method FALLBACK (*@rest) {
@@ -170,7 +174,7 @@ role None does HasValue is export {
     }
 }
 
-#| Typed Some
+# Typed Some
 role Some[::Type] does Things does HasValue is export {
     has Type $.value is required;      # using the type capture for a public attr
 
@@ -180,7 +184,7 @@ role Some[::Type] does Things does HasValue is export {
     }
 }
 
-#| Untyped Some - Passes t
+# Untyped Some
 role Some does Things does HasValue is export {
     has $.s is required;                  # require the attr ... if absent, fail
     has $.value;
@@ -195,17 +199,17 @@ role Some does Things does HasValue is export {
     }
 }
 
-#| simple creation of Some objects that also match the Maybe type
+#| Simple creation of Some objects that also match the Maybe type.
 sub something(::Type $value) is export {
     return Some[(Type)].new(:$value) but Maybe[(Type)];
 }
 
-#| use to create None objects when your method returns a typed Maybe
+#| Used to create None objects when your method returns a typed Maybe.
 multi sub nothing(::Type) is export {
     return None.new() but Maybe[(Type)];
 }
 
-#| simple creation of untyped None objects that also match the Maybe type
+#| Used to create None objects when your method returns an untyped Maybe.
 multi sub nothing() is export {
     return None.new() but Maybe;
 }
