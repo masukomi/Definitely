@@ -215,6 +215,6 @@ multi sub nothing() is export {
 }
 
 #| extracts the value from a Maybe object or dies with your message
-sub value-or-die (Maybe $maybe_obj, Str $message) is export {
+sub unwrap (Maybe $maybe_obj, Str $message) is export {
     $maybe_obj ~~ Some ?? $maybe_obj.value !! die $message;
 }
