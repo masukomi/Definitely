@@ -121,10 +121,10 @@ multi sub nothing() returns Mu
 
 Used to create None objects when your method returns an untyped Maybe.
 
-### sub value-or-die
+### sub unwrap
 
 ```raku
-sub value-or-die(
+sub unwrap(
     Definitely::Maybe $maybe_obj,
     Str $message
 ) returns Mu
