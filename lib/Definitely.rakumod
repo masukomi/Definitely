@@ -137,7 +137,7 @@ role HasValue {
 }
 role Things {                   #a utility Role for both flavours of Some
     method gist {
-        $.value;                #
+        $.value.Str;                #
     }                           # .gist and .raku are used by .say and .Str
                                 # methods ... so we ovalueerride them to make nice
     method raku {               # output
@@ -160,6 +160,8 @@ role Maybe[::T] does HasValue is export {}
 #| Untype Maybe - use when you don't know or care what type your method returns
 role Maybe does HasValue is export {}
 
+#TODO: add a typed None
+
 #| If your method returns Maybe, but you don't have a valid value, return None
 role None does HasValue is export {
     method Bool { False }
@@ -168,7 +170,7 @@ role None does HasValue is export {
     }
 }
 
-#| Typed Some - Untyped some uses this too
+#| Typed Some
 role Some[::Type] does Things does HasValue is export {
     has Type $.value is required;      # using the type capture for a public attr
 
@@ -178,7 +180,7 @@ role Some[::Type] does Things does HasValue is export {
     }
 }
 
-#| Untyped Some - Passes through to typed Some.
+#| Untyped Some - Passes t
 role Some does Things does HasValue is export {
     has $.s is required;                  # require the attr ... if absent, fail
     has $.value;
