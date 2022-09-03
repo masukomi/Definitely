@@ -66,6 +66,8 @@ isa-ok(nothing(), None);
 isa-ok(nothing(), Maybe);
 # test that nothing(Type) returns a None+Maybe[Type]
 isa-ok(nothing(Int), Maybe[Int]);
+# because I _keep_ calling it with Maybe[Foo]. grr.
+isa-ok(nothing(Maybe[Int]), Maybe[Int]);
 # NOTE: currently no Typed None's. Something to implement later.
 # test that nothing(Type) returns a None[Type] that's a Maybe
 isa-ok(nothing(Int), Maybe[Int]);

@@ -80,6 +80,12 @@ C<Maybe[Type]> compatible object to your caller. The caller then has multiple
 choices for how to handle the result.
 
 
+=para
+Note: you should not specify Maybe when calling C<nothing(Type)>. For example,
+call C<nothing(Int)> not C<nothing(Maybe[Int])>. The function will take care
+of making sure it conforms to the Maybe Type for you.
+
+
 
 =begin code :lang<raku>
 use Definitely;
@@ -210,6 +216,12 @@ sub something(::Type $value) is export {
 
 #| Used to create None objects when your method returns a typed Maybe.
 multi sub nothing(::Type) is export {
+    # in case someone (me) accidentally
+    # calls nothing(Maybe[Foo]) instead of nothing(Foo);
+    if Type.^name ~~ /"Definitely::Maybe[" (\w+) "]"/ {
+        return nothing($0.EVAL)
+    }
+
     return None.new() but Maybe[(Type)];
 }
 

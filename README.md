@@ -45,6 +45,8 @@ USAGE
 
 The core idea is simple. When creating a function specify it's return type as `Maybe` or `Maybe[Type]`. Within the function you'll use the `something(Any)` and `nothing()` or `nothing(Type)` helper functions to provide a `Maybe` / `Maybe[Type]` compatible object to your caller. The caller then has multiple choices for how to handle the result.
 
+Note: you should not specify Maybe when calling `nothing(Type)`. For example, call `nothing(Int)` not `nothing(Maybe[Int])`. The function will take care of making sure it conforms to the Maybe Type for you.
+
 ```raku
 use Definitely;
 
