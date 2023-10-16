@@ -54,7 +54,7 @@ multi sub foo($x) returns Maybe[Int] {
   $x ~~ Int ?? something($x) !! nothing(Int);
 }
 multi sub foo($x) returns Maybe {
-  2.rand.Int == 1 ?? something($x) !! nothing();
+  (0,1).roll ?? something($x) !! nothing();
 }
 
 # explicitly handle questionable results
