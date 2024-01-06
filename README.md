@@ -14,7 +14,7 @@ It's called "Definitely" because when you use this module's types, you'll "Defin
 
   * `Definitely::Some`
 
-  * `Definitley::None`
+  * `Definitely::None`
 
 For example:
 
