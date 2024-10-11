@@ -38,7 +38,7 @@ multi sub logger($x) returns Maybe[Logger] {
 logger().record_error("does nothing, and doesn't blow up")
 ```
 
-Many racoons argue that because Raku has typed `Nil`s, the Maybe Monad is already built in. See [this Stack Overflow answer](https://stackoverflow.com/questions/55072228/creating-a-maybe-type-in-perl-6) for more details. Even if they're right, people like me would argue that there's a huge maintainability value to having code that makes it *explicit* that *Maybe* the value you get back from a method won't be what you were hoping for.
+Many rakuteers argue that because Raku has typed `Nil`s, the Maybe Monad is already built in. See [this Stack Overflow answer](https://stackoverflow.com/questions/55072228/creating-a-maybe-type-in-perl-6) for more details. Even if they're right, people like me would argue that there's a huge maintainability value to having code that makes it *explicit* that *Maybe* the value you get back from a method won't be what you were hoping for.
 
 USAGE
 -----
@@ -70,11 +70,21 @@ if $questionable_result.is-something {
 }
 # or, test truthyness (Some is True None is False)
 my Maybe[Int] $questionable_result = foo(4);
-?$questionable_result ?? $questionable_result.value !! die "oh no!"
+$questionable_result ?? $questionable_result.value !! die "oh no!"
 
 # or, just assume it's good if you don't care if calls have no result
 my Maybe[Logger] $maybe_log = logger();
 $maybe_log.report_error("called if logger is Some, ignored if None")
+
+# subs that return Maybe can be chained with the bind operator >>=
+sub halve(Int $x --> Maybe[Int]) {
+    given $x {
+        when   * %% 2 { something( $x div 2 ) }
+        when ! * %% 2 { nothing(Int) }
+    }
+}
+say (halve 3) >>= &halve;
+say (something 32) >>= &halve >>= &halve >>= &halve;
 ```
 
 Installation
@@ -85,7 +95,7 @@ Installation
 AUTHORS
 -------
 
-The seed of this comes from [This post by p6Steve](https://p6steve.wordpress.com/2022/08/16/raku-rust-option-some-none/). [masukomi](https://masukomi.org)) built it out into a full Maybe Monad implementation as a Raku module.
+The seed of this comes from [This post by p6Steve](https://p6steve.wordpress.com/2022/08/16/raku-rust-option-some-none/). [masukomi](https://masukomi.org) built it out into a full Maybe Monad implementation as a Raku module.
 
 LICENSE
 -------
@@ -138,4 +148,15 @@ sub unwrap(
 ```
 
 extracts the value from a Maybe object or dies with your message
+
+### multi sub bind
+
+```raku
+multi infix:«>>=»(
+    Maybe $x, 
+    &f
+ ) returns Maybe
+```
+
+bind operation `>>=` for chaining subs that return a Maybe. `(M a) -> &f(a -> M b) -> (M b)`, which receives a monadic value `M a` and a function `&f` that accepts values of the base type a. Bind unwraps a, applies `&f` to it, and returns the result of `&f` as a Maybe value `M b` (see [Wikipedia Monad](https://en.wikipedia.org/wiki/Monad_(functional_programming)#An_example:_Maybe))
 
