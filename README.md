@@ -3,6 +3,8 @@ Definitely (Maybe)
 
 An implementation of the Maybe Monad in Raku
 
+Please note that I have forked this module as at 2.1.3 in order to add a Bind operator since my PR over at masukomi was not reviewed.
+
 DESCRIPTION
 -----------
 
