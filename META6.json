@@ -1,13 +1,13 @@
 {
   "name": "Definitely",
   "description": "An implementation of the Maybe Monad",
-  "version": "2.1.2",
-  "perl": "6.c",
+  "version": "2.1.3",
+  "perl": "6.d",
   "authors": [
-    "p6steve <p6steve@furnival.net>",
+    "librasteve <librasteve@furnival.net>",
     "masukomi <masukomi@masukomi.org>"
   ],
-  "auth": "zef:masukomi",
+  "auth": "zef:librasteve",
   "depends": [],
   "build-depends": [],
   "test-depends": [],
@@ -21,5 +21,5 @@
     "Monad"
   ],
   "api": "2",
-  "source-url": "git://github.com/masukomi/Definitely.git"
+  "source-url": "git://github.com/librasteve/Definitely.git"
 }

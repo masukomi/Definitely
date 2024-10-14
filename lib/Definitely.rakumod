@@ -139,7 +139,7 @@ MIT. See LICENSE file.
 
 
 
-unit module Definitely:ver<2.1.2>:auth<masukomi (masukomi@masukomi.org)>; # (Maybe)
+unit module Definitely:ver<2.1.3>:auth<librasteve (librasteve@furnival.net)>; # (Maybe)
 
 
 # provides the is-something method to Some, None, & Many
