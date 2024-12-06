@@ -1,0 +1,16 @@
+use Test;      # a Standard module included with Rakudo
+use lib 'lib';
+use Definitely;
+
+plan 3;
+
+sub halve(Int $x --> Maybe[Int]) {
+	given $x {
+		when   * %% 2 { something( $x div 2 ) }
+		when ! * %% 2 { nothing(Int) }
+	}
+}
+
+is (halve 4) >>= &halve, 1,									'>>= bind';
+is (something 32) >>= &halve >>= &halve >>= &halve, 4,		'compound';
+ok (halve 3) ~~ None, 										'nothing';

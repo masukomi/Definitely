@@ -1,29 +1,25 @@
 {
-  "api": "2",
-  "auth": "zef:masukomi",
+  "name": "Definitely",
+  "description": "An implementation of the Maybe Monad",
+  "version": "2.1.3",
+  "perl": "6.d",
   "authors": [
-    "p6steve <p6steve@furnival.net>",
+    "librasteve <librasteve@furnival.net>",
     "masukomi <masukomi@masukomi.org>"
   ],
-  "build-depends": [
-  ],
-  "depends": [
-  ],
-  "description": "An implementation of the Maybe Monad",
-  "license": "MIT",
-  "name": "Definitely",
-  "perl": "6.c",
+  "auth": "zef:librasteve",
+  "depends": [],
+  "build-depends": [],
+  "test-depends": [],
   "provides": {
     "Definitely": "lib/Definitely.rakumod"
   },
-  "resources": [
-  ],
-  "source-url": "git://github.com/masukomi/Definitely.git",
+  "resources": [],
+  "license": "MIT",
   "tags": [
     "Maybe",
     "Monad"
   ],
-  "test-depends": [
-  ],
-  "version": "2.1.1"
+  "api": "2",
+  "source-url": "git://github.com/librasteve/Definitely.git"
 }

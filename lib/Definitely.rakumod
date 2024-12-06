@@ -139,7 +139,7 @@ MIT. See LICENSE file.
 
 
 
-unit module Definitely:ver<2.1.1>:auth<masukomi (masukomi@masukomi.org)>; # (Maybe)
+unit module Definitely:ver<2.1.3>:auth<librasteve (librasteve@furnival.net)>; # (Maybe)
 
 
 # provides the is-something method to Some, None, & Many
@@ -233,4 +233,17 @@ multi sub nothing() is export {
 #| extracts the value from a Maybe object or dies with your message
 sub unwrap (Maybe $maybe_obj, Str $message) is export {
     $maybe_obj ~~ Some ?? $maybe_obj.value !! die $message;
+}
+
+#| bind operation (viz. https://en.wikipedia.org/wiki/Monad_(functional_programming)#An_example:_Maybe)
+#|
+#| bind :: (M a) -> (a -> M b) -> (M b) (typically represented as >>=), which receives a monadic value M a
+#| and a function f that accepts values of the base type a. Bind unwraps a, applies f to it, and can process
+#| the result of f as a monadic value M b.
+multi infix:«>>=»(Maybe $x, &f --> Maybe) is export {
+    my $msg = "Can't unwrap Maybe in bind (>>=) operation";
+    given $x {
+        when *.is-something { &f( unwrap($x, $msg) ) }
+        default { $x }
+    }
 }
