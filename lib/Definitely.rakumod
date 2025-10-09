@@ -179,6 +179,7 @@ role Maybe does HasValue is export {}
 # If your method returns Maybe, but you don't have a valid value, return None
 role None does HasValue is export {
     method Bool { False }
+    method defined { False }
     method FALLBACK (*@rest) {
         return None;
     }
