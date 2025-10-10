@@ -83,4 +83,9 @@ is(unwrap(something(3), "won't happen"), 3, "value or die returns value");
 # test that unwrap dies
 dies-ok({unwrap(nothing(), "eep")});
 is(unwrap-message("my error message"), "my error message");
+
+# test that nothing() returns something that's not defined
+is(nothing() // 2, 2);
+
+
 done-testing;  # optional with 'plan'
